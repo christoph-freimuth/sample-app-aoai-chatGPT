@@ -1,43 +1,41 @@
-import { useRef, useState, useEffect, useContext, useLayoutEffect } from 'react'
-import { CommandBarButton, IconButton, Dialog, DialogType, Stack } from '@fluentui/react'
-import { SquareRegular, ShieldLockRegular, ErrorCircleRegular } from '@fluentui/react-icons'
-
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
-import rehypeRaw from 'rehype-raw'
-import uuid from 'react-uuid'
-import { isEmpty } from 'lodash'
-import DOMPurify from 'dompurify'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { nord } from 'react-syntax-highlighter/dist/esm/styles/prism'
-
-import styles from './Chat.module.css'
-import Contoso from '../../assets/Contoso.svg'
-import { XSSAllowTags } from '../../constants/sanatizeAllowables'
-
 import {
-  ChatMessage,
-  ConversationRequest,
-  conversationApi,
-  Citation,
-  ToolMessageContent,
   AzureSqlServerExecResults,
-  ChatResponse,
-  getUserInfo,
-  Conversation,
-  historyGenerate,
-  historyUpdate,
-  historyClear,
   ChatHistoryLoadingState,
+  ChatMessage,
+  ChatResponse,
+  Citation,
+  Conversation,
+  ConversationRequest,
   CosmosDBStatus,
   ErrorMessage,
   ExecResults,
-} from "../../api";
-import { Answer } from "../../components/Answer";
-import { QuestionInput } from "../../components/QuestionInput";
-import { ChatHistoryPanel } from "../../components/ChatHistory/ChatHistoryPanel";
-import { AppStateContext } from "../../state/AppProvider";
-import { useBoolean } from "@fluentui/react-hooks";
+  ToolMessageContent,
+  conversationApi,
+  getUserInfo,
+  historyClear,
+  historyGenerate,
+  historyUpdate
+} from '../../api'
+import { CommandBarButton, Dialog, DialogType, IconButton, Stack } from '@fluentui/react'
+import { ErrorCircleRegular, ShieldLockRegular, SquareRegular } from '@fluentui/react-icons'
+import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
+
+import { Answer } from '../../components/Answer'
+import { AppStateContext } from '../../state/AppProvider'
+import { ChatHistoryPanel } from '../../components/ChatHistory/ChatHistoryPanel'
+import DOMPurify from 'dompurify'
+import { QuestionInput } from '../../components/QuestionInput'
+import ReactMarkdown from 'react-markdown'
+import SupportLogo from '../../assets/support-logo.svg'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { XSSAllowTags } from '../../constants/sanatizeAllowables'
+import { isEmpty } from 'lodash'
+import { nord } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import rehypeRaw from 'rehype-raw'
+import remarkGfm from 'remark-gfm'
+import styles from './Chat.module.css'
+import { useBoolean } from '@fluentui/react-hooks'
+import uuid from 'react-uuid'
 
 const enum messageStatus {
   NotRunning = 'Not Running',
@@ -107,7 +105,7 @@ const Chat = () => {
 
   useEffect(() => {
     if (!appStateContext?.state.isLoading) {
-      setLogo(ui?.chat_logo || ui?.logo || Contoso)
+      setLogo(ui?.chat_logo || ui?.logo || SupportLogo)
     }
   }, [appStateContext?.state.isLoading])
 
@@ -712,22 +710,21 @@ const Chat = () => {
   }
 
   const parsePlotFromMessage = (message: ChatMessage) => {
-    if (message?.role && message?.role === "tool") {
+    if (message?.role && message?.role === 'tool') {
       try {
-        const execResults = JSON.parse(message.content) as AzureSqlServerExecResults;
-        const codeExecResult = execResults.all_exec_results.at(-1)?.code_exec_result;
+        const execResults = JSON.parse(message.content) as AzureSqlServerExecResults
+        const codeExecResult = execResults.all_exec_results.at(-1)?.code_exec_result
         if (codeExecResult === undefined) {
-          return null;
+          return null
         }
-        return codeExecResult;
-      }
-      catch {
-        return null;
+        return codeExecResult
+      } catch {
+        return null
       }
       // const execResults = JSON.parse(message.content) as AzureSqlServerExecResults;
       // return execResults.all_exec_results.at(-1)?.code_exec_result;
     }
-    return null;
+    return null
   }
 
   const disabledButton = () => {
@@ -816,7 +813,7 @@ const Chat = () => {
                     <div className={styles.chatMessageGpt}>
                       <Answer
                         answer={{
-                          answer: "Generating answer...",
+                          answer: 'Generating answer...',
                           citations: [],
                           plotly_data: null
                         }}
@@ -857,10 +854,17 @@ const Chat = () => {
                       iconDisabled: {
                         color: '#BDBDBD !important'
                       },
+                      iconHovered: {
+                        color: '#114a70',
+                        transition: 'color 0.15s ease-in-out'
+                      },
                       root: {
                         color: '#FFFFFF',
-                        background:
-                          'radial-gradient(109.81% 107.82% at 100.1% 90.19%, #0F6CBD 33.63%, #2D87C3 70.31%, #8DDDD8 100%)'
+                        background: '#6AA6CF'
+                      },
+                      rootHovered: {
+                        background: '#6aa6cf4d',
+                        transition: 'background-color 0.15s ease-in-out'
                       },
                       rootDisabled: {
                         background: '#F0F0F0'
@@ -882,10 +886,17 @@ const Chat = () => {
                     iconDisabled: {
                       color: '#BDBDBD !important'
                     },
+                    iconHovered: {
+                      color: '#114a70',
+                      transition: 'color 0.15s ease-in-out'
+                    },
                     root: {
                       color: '#FFFFFF',
-                      background:
-                        'radial-gradient(109.81% 107.82% at 100.1% 90.19%, #0F6CBD 33.63%, #2D87C3 70.31%, #8DDDD8 100%)'
+                      background: '#6AA6CF'
+                    },
+                    rootHovered: {
+                      background: '#6aa6cf4d',
+                      transition: 'background-color 0.15s ease-in-out'
                     },
                     rootDisabled: {
                       background: '#F0F0F0'
@@ -984,30 +995,43 @@ const Chat = () => {
                 />
               </Stack>
               <Stack horizontalAlign="space-between">
-                {execResults.map((execResult) => {
+                {execResults.map(execResult => {
                   return (
                     <Stack className={styles.exectResultList} verticalAlign="space-between">
-                      <><span>Intent:</span> <p>{execResult.intent}</p></>
-                      {execResult.search_query && <><span>Search Query:</span>
-                        <SyntaxHighlighter
-                          style={nord}
-                          wrapLines={true}
-                          lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
-                          language="sql"
-                          PreTag="p">
-                          {execResult.search_query}
-                        </SyntaxHighlighter></>}
-                      {execResult.search_result && <><span>Search Result:</span> <p>{execResult.search_result}</p></>}
-                      {execResult.code_generated && <><span>Code Generated:</span>
-                        <SyntaxHighlighter
-                          style={nord}
-                          wrapLines={true}
-                          lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
-                          language="python"
-                          PreTag="p">
-                          {execResult.code_generated}
-                        </SyntaxHighlighter>
-                      </>}
+                      <>
+                        <span>Intent:</span> <p>{execResult.intent}</p>
+                      </>
+                      {execResult.search_query && (
+                        <>
+                          <span>Search Query:</span>
+                          <SyntaxHighlighter
+                            style={nord}
+                            wrapLines={true}
+                            lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
+                            language="sql"
+                            PreTag="p">
+                            {execResult.search_query}
+                          </SyntaxHighlighter>
+                        </>
+                      )}
+                      {execResult.search_result && (
+                        <>
+                          <span>Search Result:</span> <p>{execResult.search_result}</p>
+                        </>
+                      )}
+                      {execResult.code_generated && (
+                        <>
+                          <span>Code Generated:</span>
+                          <SyntaxHighlighter
+                            style={nord}
+                            wrapLines={true}
+                            lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
+                            language="python"
+                            PreTag="p">
+                            {execResult.code_generated}
+                          </SyntaxHighlighter>
+                        </>
+                      )}
                     </Stack>
                   )
                 })}

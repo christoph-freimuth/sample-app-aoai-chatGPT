@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { SendRegular, SlideMicrophone20Filled } from '@fluentui/react-icons'
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import { Stack, TextField } from '@fluentui/react'
-import { SendRegular } from '@fluentui/react-icons'
+import { useEffect, useState } from 'react'
 
 import Send from '../../assets/Send.svg'
-
+import VoiceRecording from '../../assets/voice-recording.svg'
 import styles from './QuestionInput.module.css'
 
 interface Props {
@@ -16,6 +17,11 @@ interface Props {
 
 export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conversationId }: Props) => {
   const [question, setQuestion] = useState<string>('')
+  const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition()
+
+  useEffect(() => {
+    setQuestion(transcript)
+  }, [transcript])
 
   const sendQuestion = () => {
     if (disabled || !question.trim()) {
@@ -30,6 +36,7 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
 
     if (clearOnSend) {
       setQuestion('')
+      resetTranscript()
     }
   }
 
@@ -46,6 +53,14 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
 
   const sendQuestionDisabled = disabled || !question.trim()
 
+  const startRecording = () => {
+    SpeechRecognition.startListening({ continuous: true })
+  }
+
+  const stopRecording = () => {
+    SpeechRecognition.stopListening()
+  }
+
   return (
     <Stack horizontal className={styles.questionInputContainer}>
       <TextField
@@ -58,19 +73,37 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
         onChange={onQuestionChange}
         onKeyDown={onEnterPress}
       />
-      <div
-        className={styles.questionInputSendButtonContainer}
-        role="button"
-        tabIndex={0}
-        aria-label="Ask question button"
-        onClick={sendQuestion}
-        onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? sendQuestion() : null)}>
-        {sendQuestionDisabled ? (
-          <SendRegular className={styles.questionInputSendButtonDisabled} />
-        ) : (
-          <img src={Send} className={styles.questionInputSendButton} alt="Send Button" />
-        )}
-      </div>
+      <Stack className={styles.buttonStack}>
+        <button
+          className={styles.voiceRecordingButton + (listening ? ` ${styles.active}` : ` ${styles.inactive}`)}
+          onMouseDown={startRecording}
+          onMouseUp={stopRecording}
+          disabled={!browserSupportsSpeechRecognition}>
+          <svg width="80" height="80" viewBox="0 0 80 80" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <rect width="80" height="80" rx="40" />
+            <path
+              d="M50 30V38M50 30C50 27.3478 48.9464 24.8043 47.0711 22.9289C45.1957 21.0536 42.6522 20 40 20C37.3478 20 34.8043 21.0536 32.9289 22.9289C31.0536 24.8043 30 27.3478 30 30V38C30 40.6522 31.0536 43.1957 32.9289 45.0711C34.8043 46.9464 37.3478 48 40 48C42.6522 48 45.1957 46.9464 47.0711 45.0711C48.9464 43.1957 50 40.6522 50 38M50 30H44M50 38H44M56 38C56 42.2435 54.3143 46.3131 51.3137 49.3137C48.3131 52.3143 44.2435 54 40 54M40 54C35.7565 54 31.6869 52.3143 28.6863 49.3137C25.6857 46.3131 24 42.2435 24 38M40 54V60M40 60H46M40 60H34"
+              stroke="white"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </button>
+        <div
+          className={styles.questionInputSendButtonContainer}
+          role="button"
+          tabIndex={0}
+          aria-label="Ask question button"
+          onClick={sendQuestion}
+          onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? sendQuestion() : null)}>
+          {sendQuestionDisabled ? (
+            <SendRegular className={styles.questionInputSendButtonDisabled} />
+          ) : (
+            <img src={Send} className={styles.questionInputSendButton} alt="Send Button" />
+          )}
+        </div>
+      </Stack>
       <div className={styles.questionInputBottomBorder} />
     </Stack>
   )
