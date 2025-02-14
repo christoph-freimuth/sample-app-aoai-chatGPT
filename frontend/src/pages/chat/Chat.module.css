@@ -35,6 +35,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 0 1rem;
 }
 
 .chatEmptyStateTitle {
@@ -62,7 +63,7 @@
 }
 
 .chatIcon {
-  height: 256px;
+  height: 168px;
   width: auto;
 }
 
@@ -82,7 +83,6 @@
 .chatMessageUser {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 12px;
 }
 
 .chatMessageUserMessage {
@@ -208,9 +208,10 @@
   padding: 5px 16px;
   gap: 4px;
   position: absolute;
-  width: 161px;
+  width: auto;
   height: 32px;
-  left: calc(50% - 161px / 2 + 25.8px);
+  left: 50%;
+  transform: translateX(-50%);
   bottom: 116px;
   border: 1px solid #d1d1d1;
   border-radius: 16px;
@@ -223,7 +224,7 @@
 }
 
 .stopGeneratingText {
-  width: 103px;
+  width: auto;
   height: 20px;
   font-style: normal;
   font-weight: 600;
@@ -363,21 +364,50 @@ a {
 }
 
 @media (max-width: 480px) {
+  .chatRoot {
+    margin: 0;
+  }
+
+  .chatContainer {
+    max-height: calc(100vh - 130px);
+  }
+
+  .citationPanel {
+    max-height: calc(100vh - 130px);
+  }
+
+  .chatMessageStream {
+    margin: 0;
+    padding: 0.5rem;
+  }
+
+  .chatMessageUserMessage {
+    padding: 0.5rem 1rem;
+  }
+
   .chatInput {
-    width: 90%;
-    max-width: 90%;
+    width: 95%;
+    max-width: 95%;
+    margin-bottom: 0.5rem;
+  }
+
+  .chatIcon {
+    height: 132px;
   }
 
   .newChatIcon {
-    left: 0px;
+    left: calc(100% - 90px);
+    top: -50px;
   }
 
   .clearChatBroom {
-    left: 0px;
+    left: calc(100% - 40px);
+    top: -50px;
   }
 
   .clearChatBroomNoCosmos {
-    left: 0px;
+    left: calc(100% - 40px);
+    top: -50px;
   }
 
   .chatEmptyStateTitle {

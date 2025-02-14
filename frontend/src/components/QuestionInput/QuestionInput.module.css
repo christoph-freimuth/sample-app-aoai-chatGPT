@@ -15,14 +15,11 @@
 .questionInputTextArea {
   width: 100%;
   line-height: 40px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-left: 12px;
-  margin-right: 12px;
+  margin: 0.5rem;
 }
 
 .buttonStack {
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 1rem;
 }
 
@@ -40,6 +37,12 @@
 .voiceRecordingButton {
   background: none;
   border: none;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .voiceRecordingButton:disabled {
@@ -61,7 +64,6 @@
 }
 
 .questionInputSendButtonDisabled {
-  /* opacity: 0.4; */
   width: 28px;
   height: 28px;
   background: none;
@@ -87,7 +89,17 @@
 
 @media (max-width: 480px) {
   .questionInputContainer {
-    left: 16.5%;
+    height: 96px;
+    left: 0;
+  }
+
+  .buttonStack {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .voiceRecordingButton > svg {
+    width: 44px;
+    height: 44px;
   }
 }
 

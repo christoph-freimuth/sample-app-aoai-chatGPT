@@ -17,7 +17,7 @@ import {
   historyUpdate
 } from '../../api'
 import { CommandBarButton, Dialog, DialogType, IconButton, Stack } from '@fluentui/react'
-import { ErrorCircleRegular, ShieldLockRegular, SquareRegular } from '@fluentui/react-icons'
+import { ErrorCircleRegular, ShieldLockRegular, Stop16Filled } from '@fluentui/react-icons'
 import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { Answer } from '../../components/Answer'
@@ -775,7 +775,7 @@ const Chat = () => {
                 <h2 className={styles.chatEmptyStateSubtitle}>{ui?.chat_description}</h2>
               </Stack>
             ) : (
-              <div className={styles.chatMessageStream} style={{ marginBottom: isLoading ? '40px' : '0px' }} role="log">
+              <div className={styles.chatMessageStream} style={{ marginBottom: isLoading ? '50px' : '' }} role="log">
                 {messages.map((answer, index) => (
                   <>
                     {answer.role === 'user' ? (
@@ -813,7 +813,7 @@ const Chat = () => {
                     <div className={styles.chatMessageGpt}>
                       <Answer
                         answer={{
-                          answer: 'Generating answer...',
+                          answer: 'Support schreibt...',
                           citations: [],
                           plotly_data: null
                         }}
@@ -837,9 +837,9 @@ const Chat = () => {
                   tabIndex={0}
                   onClick={stopGenerating}
                   onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? stopGenerating() : null)}>
-                  <SquareRegular className={styles.stopGeneratingIcon} aria-hidden="true" />
+                  <Stop16Filled className={styles.stopGeneratingIcon} aria-hidden="true" />
                   <span className={styles.stopGeneratingText} aria-hidden="true">
-                    Stop generating
+                    Anfrage abbrechen
                   </span>
                 </Stack>
               )}
@@ -907,7 +907,7 @@ const Chat = () => {
                       ? styles.clearChatBroom
                       : styles.clearChatBroomNoCosmos
                   }
-                  iconProps={{ iconName: 'Broom' }}
+                  iconProps={{ iconName: 'Delete' }}
                   onClick={
                     appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured
                       ? clearChat
@@ -924,7 +924,7 @@ const Chat = () => {
               </Stack>
               <QuestionInput
                 clearOnSend
-                placeholder="Type a new question..."
+                placeholder="Stelle deine Frage..."
                 disabled={isLoading}
                 onSend={(question, id) => {
                   appStateContext?.state.isCosmosDBAvailable?.cosmosDB

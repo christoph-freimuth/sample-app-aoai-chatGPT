@@ -1,10 +1,9 @@
-import { SendRegular, SlideMicrophone20Filled } from '@fluentui/react-icons'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import { Stack, TextField } from '@fluentui/react'
 import { useEffect, useState } from 'react'
 
 import Send from '../../assets/Send.svg'
-import VoiceRecording from '../../assets/voice-recording.svg'
+import { SendRegular } from '@fluentui/react-icons'
 import styles from './QuestionInput.module.css'
 
 interface Props {
@@ -17,11 +16,19 @@ interface Props {
 
 export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conversationId }: Props) => {
   const [question, setQuestion] = useState<string>('')
-  const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition()
+  const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition({
+    clearTranscriptOnListen: true
+  })
 
   useEffect(() => {
     setQuestion(transcript)
   }, [transcript])
+
+  useEffect(() => {
+    if (question.trim() === '') {
+      resetTranscript()
+    }
+  }, [resetTranscript, question])
 
   const sendQuestion = () => {
     if (disabled || !question.trim()) {
@@ -57,8 +64,9 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
     SpeechRecognition.startListening({ continuous: true })
   }
 
-  const stopRecording = () => {
-    SpeechRecognition.stopListening()
+  const stopRecording = async () => {
+    await SpeechRecognition.stopListening()
+    sendQuestion()
   }
 
   return (
@@ -72,12 +80,20 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
         value={question}
         onChange={onQuestionChange}
         onKeyDown={onEnterPress}
+        styles={{
+          fieldGroup: { height: '100%' },
+          field: { height: '100%', fontSize: '1rem' },
+          wrapper: { height: '100%' }
+        }}
       />
       <Stack className={styles.buttonStack}>
         <button
           className={styles.voiceRecordingButton + (listening ? ` ${styles.active}` : ` ${styles.inactive}`)}
           onMouseDown={startRecording}
           onMouseUp={stopRecording}
+          onTouchStart={startRecording}
+          onTouchEnd={stopRecording}
+          onTouchCancel={stopRecording}
           disabled={!browserSupportsSpeechRecognition}>
           <svg width="80" height="80" viewBox="0 0 80 80" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <rect width="80" height="80" rx="40" />
@@ -90,19 +106,6 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
             />
           </svg>
         </button>
-        <div
-          className={styles.questionInputSendButtonContainer}
-          role="button"
-          tabIndex={0}
-          aria-label="Ask question button"
-          onClick={sendQuestion}
-          onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? sendQuestion() : null)}>
-          {sendQuestionDisabled ? (
-            <SendRegular className={styles.questionInputSendButtonDisabled} />
-          ) : (
-            <img src={Send} className={styles.questionInputSendButton} alt="Send Button" />
-          )}
-        </div>
       </Stack>
       <div className={styles.questionInputBottomBorder} />
     </Stack>
