@@ -300,7 +300,8 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
             </Stack.Item>
           </Stack>
         )}
-        <Stack horizontal className={styles.answerFooter}>
+        {/* ANSWER FOOTER: REFERENCES */}
+        {/* <Stack horizontal className={styles.answerFooter}>
           {!!parsedAnswer.citations.length && (
             <Stack.Item onKeyDown={e => (e.key === 'Enter' || e.key === ' ' ? toggleIsRefAccordionOpen() : null)}>
               <Stack style={{ width: '100%' }}>
@@ -343,8 +344,8 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
               </Stack>
             </Stack.Item>
           )}
-        </Stack>
-        {chevronIsExpanded && (
+        </Stack> */}
+        {/* {chevronIsExpanded && (
           <div className={styles.citationWrapper}>
             {parsedAnswer.citations.map((citation, idx) => {
               return (
@@ -363,9 +364,10 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
               )
             })}
           </div>
-        )}
+        )} */}
       </Stack>
-      <Dialog
+      {/* REFERENCE DIALOG */}
+      {/* <Dialog
         onDismiss={() => {
           resetFeedbackDialog()
           setFeedbackState(Feedback.Neutral)
@@ -402,7 +404,7 @@ export const Answer = ({ answer, onCitationClicked, onExectResultClicked }: Prop
             Submit
           </DefaultButton>
         </Stack>
-      </Dialog>
+      </Dialog> */}
     </>
   )
 }
