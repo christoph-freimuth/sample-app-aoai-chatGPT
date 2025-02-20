@@ -12,9 +12,17 @@ interface Props {
   placeholder?: string
   clearOnSend?: boolean
   conversationId?: string
+  language?: string
 }
 
-export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conversationId }: Props) => {
+export const QuestionInput = ({
+  onSend,
+  disabled,
+  placeholder,
+  clearOnSend,
+  conversationId,
+  language = 'de-DE'
+}: Props) => {
   const [question, setQuestion] = useState<string>('')
   const { transcript, listening, resetTranscript, browserSupportsSpeechRecognition } = useSpeechRecognition({
     clearTranscriptOnListen: true
@@ -61,7 +69,7 @@ export const QuestionInput = ({ onSend, disabled, placeholder, clearOnSend, conv
   const sendQuestionDisabled = disabled || !question.trim()
 
   const startRecording = () => {
-    SpeechRecognition.startListening({ continuous: true })
+    SpeechRecognition.startListening({ continuous: true, language })
   }
 
   const stopRecording = async () => {

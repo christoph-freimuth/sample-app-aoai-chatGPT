@@ -16,7 +16,7 @@ import {
   historyGenerate,
   historyUpdate
 } from '../../api'
-import { CommandBarButton, Dialog, DialogType, IconButton, Stack } from '@fluentui/react'
+import { CommandBarButton, Dialog, DialogType, Dropdown, IDropdownOption, IconButton, Stack } from '@fluentui/react'
 import { ErrorCircleRegular, ShieldLockRegular, Stop16Filled } from '@fluentui/react-icons'
 import { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
@@ -35,6 +35,7 @@ import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 import styles from './Chat.module.css'
 import { useBoolean } from '@fluentui/react-hooks'
+import { useOutletContext } from 'react-router-dom'
 import uuid from 'react-uuid'
 
 const enum messageStatus {
@@ -43,8 +44,13 @@ const enum messageStatus {
   Done = 'Done'
 }
 
+interface OutletContext {
+  language?: string
+}
+
 const Chat = () => {
   const appStateContext = useContext(AppStateContext)
+  const { language } = useOutletContext<OutletContext>()
   const ui = appStateContext?.state.frontendSettings?.ui
   const AUTH_ENABLED = appStateContext?.state.frontendSettings?.auth_enabled
   const chatMessageStreamEnd = useRef<HTMLDivElement | null>(null)
@@ -736,8 +742,26 @@ const Chat = () => {
     )
   }
 
+  // const [selectedLanguage, setSelectedLanguage] = useState<string>('de-DE')
+
+  // const languageOptions: IDropdownOption[] = [
+  //   { key: 'de-DE', text: 'Deutsch' },
+  //   { key: 'en-GB', text: 'Englisch' },
+  //   { key: 'fr-FR', text: 'Französisch' }
+  // ]
+
   return (
     <div className={styles.container} role="main">
+      {/* <Dropdown
+        options={languageOptions}
+        defaultSelectedKey={'de-DE'}
+        selectedKey={selectedLanguage}
+        onChange={(event, option) => {
+          if (option) {
+            setSelectedLanguage(String(option.key))
+          }
+        }}
+      /> */}
       {showAuthMessage ? (
         <Stack className={styles.chatEmptyState}>
           <ShieldLockRegular
@@ -925,6 +949,7 @@ const Chat = () => {
               <QuestionInput
                 clearOnSend
                 placeholder="Stelle deine Frage..."
+                language={language}
                 disabled={isLoading}
                 onSend={(question, id) => {
                   appStateContext?.state.isCosmosDBAvailable?.cosmosDB

@@ -1,4 +1,4 @@
-import { Dialog, Stack, TextField } from '@fluentui/react'
+import { Dialog, Dropdown, IDropdownOption, Stack, TextField } from '@fluentui/react'
 import { HistoryButton, ShareButton } from '../../components/common/Button'
 import { Link, Outlet } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
@@ -19,6 +19,12 @@ const Layout = () => {
   const [logo, setLogo] = useState('')
   const appStateContext = useContext(AppStateContext)
   const ui = appStateContext?.state.frontendSettings?.ui
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('de-DE')
+  const languageOptions: IDropdownOption[] = [
+    { key: 'de-DE', text: '🇩🇪 Deutsch' },
+    { key: 'en-GB', text: '🇬🇧 Englisch' },
+    { key: 'fr-FR', text: '🇫🇷 Französisch' }
+  ]
 
   const handleShareClick = () => {
     setIsSharePanelOpen(true)
@@ -82,7 +88,19 @@ const Layout = () => {
               <h1 className={styles.headerTitle}>{ui?.title}</h1>
             </Link>
           </Stack>
-          <Stack horizontal tokens={{ childrenGap: 4 }} className={styles.shareButtonContainer}>
+          <Dropdown
+            className={styles.shareButtonContainer}
+            options={languageOptions}
+            defaultSelectedKey={'de-DE'}
+            selectedKey={selectedLanguage}
+            onChange={(event, option) => {
+              if (option) {
+                setSelectedLanguage(String(option.key))
+              }
+            }}
+          />
+          {/* TODO: comment in if chat history should be shown. */}
+          {/* <Stack horizontal tokens={{ childrenGap: 4 }} className={styles.shareButtonContainer}>
             {appStateContext?.state.isCosmosDBAvailable?.status !== CosmosDBStatus.NotConfigured &&
               ui?.show_chat_history_button !== false && (
                 <HistoryButton
@@ -91,10 +109,10 @@ const Layout = () => {
                 />
               )}
             {ui?.show_share_button && <ShareButton onClick={handleShareClick} text={shareLabel} />}
-          </Stack>
+          </Stack> */}
         </Stack>
       </header>
-      <Outlet />
+      <Outlet context={{ language: selectedLanguage }} />
       <Dialog
         onDismiss={handleSharePanelDismiss}
         hidden={!isSharePanelOpen}
