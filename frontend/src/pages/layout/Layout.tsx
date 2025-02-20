@@ -22,8 +22,8 @@ const Layout = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<string>('de-DE')
   const languageOptions: IDropdownOption[] = [
     { key: 'de-DE', text: '🇩🇪 Deutsch' },
-    { key: 'en-GB', text: '🇬🇧 Englisch' },
-    { key: 'fr-FR', text: '🇫🇷 Französisch' }
+    { key: 'en-GB', text: '🇬🇧 English' },
+    { key: 'fr-FR', text: '🇫🇷 Français' }
   ]
 
   const handleShareClick = () => {
